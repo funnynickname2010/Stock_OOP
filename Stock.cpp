@@ -33,10 +33,7 @@ int Stock::DownloadFromFile()
 
 
 	std::fstream myfile(file_name);
-	if (!myfile.good()) 
-	{
-		std::fstream myfile(file_name, std::ios::trunc); //Open the file for writing
-	}
+
 	int res; 
 
 	if (myfile.good() && (myfile.peek() != std::fstream::traits_type::eof()))
@@ -48,19 +45,26 @@ int Stock::DownloadFromFile()
 
 		for (int i = 0; i < size_filled; i++)
 		{
-			myfile.getline(stock_array[i].name, ' '); //Maybe it works, I'm not sure
-			myfile.ignore();
+			myfile >> stock_array[i].name; //Maybe it works, I'm not sure
 
 			myfile >> stock_array[i].quantity;
 			myfile >> stock_array[i].price;
 			myfile.ignore();
+
+			for (int j = 0; stock_array[i].name[j - 1] != '\0'; j++)
+			{
+				if (stock_array[i].name[j] == '\0')
+				{
+					stock_array[i].name_len_filled = j;
+				}
+			}
 		}
 	}
 	else if (myfile.good())
 	{
 		res = -1;
 	}
-	else
+	else if (!myfile.good())
 	{
 		res = 0;
 	}
@@ -131,8 +135,6 @@ void Stock::ChangeQuantity(int index, int delta)
 
 void Stock::RemoveProduct(int index)
 {
-	stock_array[index].~Product(); //Need more theory
-
 	for (int i = index; i < size_filled - 1; i++)
 	{
 		stock_array[i] = stock_array[i + 1];

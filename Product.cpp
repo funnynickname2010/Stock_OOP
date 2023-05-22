@@ -14,17 +14,31 @@ Product& Product::operator =(const Product& op2)
 	return *this;
 }
 
-//Product::~Product()
-//{
-//	delete[] name;
-//}
+Product::~Product()
+{
+	delete[] name;
+}
 
 Product::Product()
 {
 	name = new char[name_len];
 	name_len_filled = 0;
-	quantity = -1;
+	quantity = 0;
 	price = -1;
+}
+
+Product::Product(const Product& op2)
+{
+	name_len_filled = op2.name_len_filled;
+	quantity = op2.quantity;
+	price = op2.price;
+
+	name = new char[name_len];
+
+	for (int i = 0; i < (name_len_filled + 1); i++) //Plus 1 because there's i number of meaningful symbols (name[i-1] is the last meaningful one) and '\0' at name[i].
+	{
+		name[i] = op2.name[i];
+	}
 }
 
 int Product::LexicographicallyCompareNames(const Product& op2)

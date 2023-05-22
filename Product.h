@@ -14,7 +14,8 @@ public:
 	int LexicographicallyCompareNames(char* myname); //Link?
 
 	Product();
-	//~Product();
+	~Product();
+	Product(const Product& op2);
 
 	Product& operator =(const Product& op2);
 

@@ -92,10 +92,15 @@ int main()
 						break;
 					}
 				}
-				else //We get the index of the chosen element
+				else if (myBucket.Search(temp_name) == -1) //If we don't already have the chosen element in the bucket
 				{
 					myBucket.AddNewProduct(myStock.stock_array[index_of_the_element_in_the_array]);
 					myBucket.stock_array[myBucket.Search(temp_name)].quantity = number;
+					myStock.ChangeQuantity(index_of_the_element_in_the_array, -number);
+				}
+				else if (myBucket.Search(temp_name) != -1) //If we already have the chosen element in the bucket in some quantity
+				{
+					myBucket.stock_array[myBucket.Search(temp_name)].quantity += number;
 					myStock.ChangeQuantity(index_of_the_element_in_the_array, -number);
 				}
 				break;
@@ -196,6 +201,11 @@ int main()
 				if (index_of_the_element_in_the_array != -1)
 				{
 					myStock.RemoveProduct(index_of_the_element_in_the_array);
+
+					if (myBucket.Search(temp_name) != -1) //Remove the product from the bucket too
+					{
+						myBucket.RemoveProduct(index_of_the_element_in_the_array);
+					}
 				}
 				else
 				{
