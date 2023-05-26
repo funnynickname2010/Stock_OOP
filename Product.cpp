@@ -70,7 +70,7 @@ int Product::LexicographicallyCompareNames(const Product& op2)
 			which_is_greater = 0;
 		}
 	}
-	
+
 	return which_is_greater;
 }
 
@@ -78,7 +78,7 @@ int Product::LexicographicallyCompareNames(char* myname)
 {
 	Product op2;
 
-	for (int i = 0; i < name_len ; i++)
+	for (int i = 0; i < name_len; i++)
 	{
 		op2.name[i] = myname[i];
 

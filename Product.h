@@ -21,4 +21,3 @@ public:
 
 	const int name_len = NAME_LEN; //A half solution, not gonna do for a real project. A vector-type name is probably needed
 };
-

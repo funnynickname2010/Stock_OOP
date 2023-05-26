@@ -7,7 +7,7 @@
 
 
 #define SETW_PARAM 15
-#define STOCK_CAPACITY 10
+#define STOCK_CAPACITY 4
 #define FILE_NAME_STOCK "stock_data.txt"
 
 using namespace std;
@@ -36,4 +36,3 @@ public:
 	Stock();
 	~Stock();
 };
-

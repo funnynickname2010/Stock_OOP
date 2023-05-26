@@ -34,16 +34,16 @@ int Stock::DownloadFromFile()
 
 	std::fstream myfile(file_name);
 
-	int res; 
+	int res;
 
 	if (myfile.good() && (myfile.peek() != std::fstream::traits_type::eof()))
 	{
 		res = 1;
-		
+
 		myfile >> size_filled;
 		myfile.ignore();
 
-		for (int i = 0; i < size_filled; i++)
+		for (int i = 0; (i < size_filled) && (i < size_allocated); i++)
 		{
 			myfile >> stock_array[i].name; //Maybe it works, I'm not sure
 
@@ -92,7 +92,7 @@ void Stock::CheckOut()
 
 	cout << "index" << setw(SETW_PARAM) << "name" << setw(SETW_PARAM) << "quantity" << setw(SETW_PARAM) << "price" << endl;
 
-	for (int i = 0; i < size_filled; i++)
+	for (int i = 0; (i < size_filled) && (i < size_allocated); i++)
 	{
 		std::cout << i << "    " << setw(SETW_PARAM) << stock_array[i].name << setw(SETW_PARAM) << stock_array[i].quantity << setw(SETW_PARAM) << stock_array[i].price << endl;
 		sum_price += stock_array[i].quantity * stock_array[i].price;
@@ -105,7 +105,7 @@ int Stock::Search(char* myname)
 {
 	int res = -1;
 
-	for (int i = 0; i < size_filled; i++)
+	for (int i = 0; (i < size_filled) && (i < size_allocated); i++)
 	{
 		if (stock_array[i].LexicographicallyCompareNames(myname) == -1)
 		{
@@ -165,11 +165,18 @@ void Stock::AddNewProduct(Product myProduct)
 		index_to_insert_at = size_filled;
 	}
 
-	for (int i = size_filled; i > index_to_insert_at; i--)
+	if (size_allocated > size_filled)
 	{
-		stock_array[i] = stock_array[i - 1];
-	}
+		for (int i = size_filled; i > index_to_insert_at; i--)
+		{
+			stock_array[i] = stock_array[i - 1];
+		}
 
-	stock_array[index_to_insert_at] = myProduct;
-	size_filled += 1;
+		stock_array[index_to_insert_at] = myProduct;
+		size_filled += 1;
+	}
+	else
+	{
+		cout << "No free space in stock." << endl;
+	}
 }

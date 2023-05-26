@@ -1,4 +1,4 @@
-#include "Stock.h"
+п»ї#include "Stock.h"
 #include "Product.h"
 #include <fstream>
 #define NAME_MAIN_LN 30
@@ -6,7 +6,7 @@
 #define FILE_NAME_BUCKET "bucket_data.txt"
 
 int UserInterface();
-Product Product_input();
+Product Product_input(Stock& mystock);
 void Product_print(const Product& myProduct);
 void NameGetter(char*& op, int ln);
 
@@ -44,7 +44,7 @@ int main()
 
 			case 1:
 
-				myStock.AddNewProduct(Product_input());
+				myStock.AddNewProduct(Product_input(myStock));
 				break;
 
 			case 2:
@@ -53,9 +53,11 @@ int main()
 
 				NameGetter(temp_name, NAME_MAIN_LN);
 
-				Product_print(myStock.stock_array[myStock.Search(temp_name)]);  //More checking
+				if (myStock.Search(temp_name) != -1)
+				{
+					Product_print(myStock.stock_array[myStock.Search(temp_name)]);  //More checking
+				}
 
-				
 
 				break;
 
@@ -83,9 +85,16 @@ int main()
 					cin >> answ;
 					if (answ == 1)
 					{
-						myBucket.AddNewProduct(myStock.stock_array[index_of_the_element_in_the_array]);
-						myBucket.stock_array[myBucket.Search(temp_name)].quantity = myStock.stock_array[index_of_the_element_in_the_array].quantity;
-						myStock.ChangeQuantity(index_of_the_element_in_the_array, -myStock.stock_array[index_of_the_element_in_the_array].quantity);
+						if (myBucket.size_filled < myBucket.size_allocated)
+						{
+							myBucket.AddNewProduct(myStock.stock_array[index_of_the_element_in_the_array]);
+							myBucket.stock_array[myBucket.Search(temp_name)].quantity = myStock.stock_array[index_of_the_element_in_the_array].quantity;
+							myStock.ChangeQuantity(index_of_the_element_in_the_array, -myStock.stock_array[index_of_the_element_in_the_array].quantity);
+						}
+						else
+						{
+							std::cout << "No free space in the bucket." << std::endl;
+						}
 					}
 					else
 					{
@@ -94,9 +103,16 @@ int main()
 				}
 				else if (myBucket.Search(temp_name) == -1) //If we don't already have the chosen element in the bucket
 				{
-					myBucket.AddNewProduct(myStock.stock_array[index_of_the_element_in_the_array]);
-					myBucket.stock_array[myBucket.Search(temp_name)].quantity = number;
-					myStock.ChangeQuantity(index_of_the_element_in_the_array, -number);
+					if (myBucket.size_filled < myBucket.size_allocated)
+					{
+						myBucket.AddNewProduct(myStock.stock_array[index_of_the_element_in_the_array]);
+						myBucket.stock_array[myBucket.Search(temp_name)].quantity = number;
+						myStock.ChangeQuantity(index_of_the_element_in_the_array, -number);
+					}
+					else
+					{
+						std::cout << "No free space in the bucket." << std::endl;
+					}
 				}
 				else if (myBucket.Search(temp_name) != -1) //If we already have the chosen element in the bucket in some quantity
 				{
@@ -193,7 +209,7 @@ int main()
 
 				cout << endl << "Product's name: ";
 
-				
+
 				NameGetter(temp_name, NAME_MAIN_LN);
 
 				index_of_the_element_in_the_array = myStock.Search(temp_name);
@@ -218,11 +234,14 @@ int main()
 			case 8:
 
 				myBucket.CheckOut();
+
+
+
 				break;
 
 			case 9:
 
-				myBucket.size_filled = 0; //Костыль
+				myBucket.size_filled = 0; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				break;
 
 			case 10:
@@ -236,6 +255,7 @@ int main()
 			}
 
 			cout << endl << "Option: ";
+			std::cin.ignore(INT_MAX, '\n');
 			cin >> switch_option;
 			delete[] temp_name;
 
@@ -281,7 +301,7 @@ void NameGetter(char*& op, int ln)
 	cin.get(op, ln);
 }
 
-Product Product_input()
+Product Product_input(Stock& mystock)
 {
 	Product myProduct;
 
@@ -292,9 +312,6 @@ Product Product_input()
 
 	cout << "Input name: ";
 
-	//service_name_array[0] = 'g';
-	//service_name_array[1] = 'o';
-	//service_name_array[2] = '\0';
 	cin.ignore();
 	cin.get(service_name_array, myProduct.name_len);
 
@@ -302,7 +319,7 @@ Product Product_input()
 	while (service_name_array[i - 1] != '\0') //Really it's valid data
 	{
 		myProduct.name[i] = service_name_array[i];
-		
+
 		if (myProduct.name[i] == '\0')
 		{
 			myProduct.name_len_filled = i;
@@ -313,21 +330,35 @@ Product Product_input()
 
 	delete[] service_name_array;
 
-	//Inputting price and quantity
-
-	do
+	if (mystock.size_allocated < mystock.size_filled)
 	{
-		cout << "Input price: ";
-		cin >> myProduct.price;
-	} while (myProduct.price <= 0);
 
-	do
+		//Inputting price and quantity
+
+		do
+		{
+			cout << "Input price: ";
+			cin >> myProduct.price;
+		} while (myProduct.price <= 0);
+
+		do
+		{
+			cout << "Input quantity: ";
+			cin >> myProduct.quantity;
+		} while (myProduct.quantity <= 0);
+
+		cout << endl;
+	}
+	else if ((mystock.Search(myProduct.name) != -1))
 	{
-		cout << "Input quantity: ";
-		cin >> myProduct.quantity;
-	} while (myProduct.quantity <= 0);
+		do
+		{
+			cout << "Input quantity: ";
+			cin >> myProduct.quantity;
+		} while (myProduct.quantity <= 0);
 
-	cout << endl;
+		cout << endl;
+	}
 
 	return myProduct;
 }
@@ -337,7 +368,7 @@ void Product_print(const Product& myProduct)
 	int i = 0;
 	cout << endl << "name" << setw(SETW_PARAM) << "price" << setw(SETW_PARAM) << "quantity" << endl;
 
-	while (myProduct.name[i] != '\0')
+	while ((myProduct.name[i] != '\0') && (i < myProduct.name_len))
 	{
 		cout << myProduct.name[i];
 		i++;
