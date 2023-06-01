@@ -134,7 +134,7 @@ int main()
 				{
 					int delta;
 
-					cout << "Delat: ";
+					cout << "Delta: ";
 					cin >> delta;
 
 					if (delta < 0 && -delta > myStock.stock_array[index_of_the_element_in_the_array].quantity)
@@ -330,7 +330,7 @@ Product Product_input(Stock& mystock)
 
 	delete[] service_name_array;
 
-	if (mystock.size_allocated < mystock.size_filled)
+	if ((mystock.size_allocated > mystock.size_filled) && mystock.Search(myProduct.name) == -1)
 	{
 
 		//Inputting price and quantity

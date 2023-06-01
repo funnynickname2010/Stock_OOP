@@ -43,6 +43,12 @@ int Stock::DownloadFromFile()
 		myfile >> size_filled;
 		myfile.ignore();
 
+		if (size_filled > size_allocated)
+		{
+			std::cout << "Not enough stock capacity to save all the products, some data may be lost\n";
+			size_filled = size_allocated;
+		}
+
 		for (int i = 0; (i < size_filled) && (i < size_allocated); i++)
 		{
 			myfile >> stock_array[i].name; //Maybe it works, I'm not sure
@@ -70,7 +76,7 @@ int Stock::DownloadFromFile()
 	}
 
 	myfile.close();
-	return res;
+	return res; //Really it's fine
 }
 
 Stock::Stock()
