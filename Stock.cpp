@@ -95,7 +95,8 @@ Stock::~Stock()
 void Stock::CheckOut()
 {
 	double sum_price = 0;
-
+	
+	cout << "\n\n--------------------CHECKOUT--------------------\n";
 	cout << "index" << setw(SETW_PARAM) << "name" << setw(SETW_PARAM) << "quantity" << setw(SETW_PARAM) << "price" << endl;
 
 	for (int i = 0; (i < size_filled) && (i < size_allocated); i++)
@@ -105,6 +106,7 @@ void Stock::CheckOut()
 	}
 
 	cout << "Total cost: " << sum_price;
+	cout << "\n\n";
 }
 
 int Stock::Search(char* myname)
